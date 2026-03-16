@@ -54,6 +54,8 @@ const App = (() => {
       btn.addEventListener('click', () => {
         const section = btn.dataset.section;
         switchSection(section);
+        // Scroll to top on section switch for mobile friendliness
+        window.scrollTo({ top: 0, behavior: 'smooth' });
       });
     });
   }

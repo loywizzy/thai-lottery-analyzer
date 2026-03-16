@@ -183,6 +183,43 @@
   transform: scale(1.05);
 }
 
+/* ── Header Actions (Desktop) ── */
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.hamburger-btn {
+  display: none;
+  all: unset;
+  cursor: pointer;
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-full);
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  transition: all var(--transition-base);
+  flex-shrink: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.hamburger-btn span {
+  display: block;
+  width: 20px;
+  height: 2px;
+  background: var(--text-primary);
+  transition: all var(--transition-base);
+}
+
+.mobile-overlay {
+  display: none;
+}
+
 /* ── Search Input ── */
 .search-container {
   width: 100%;
@@ -439,12 +476,25 @@ h1, h2, h3, h4 {
   top: 0;
   z-index: 100;
   background: rgba(10, 14, 26, 0.85);
-  backdrop-filter: blur(20px);
   border-bottom: 1px solid var(--border-color);
   padding: var(--space-md) var(--space-xl);
 }
 
+.header::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  z-index: -1;
+  pointer-events: none;
+}
+
 .header-inner {
+  position: relative;
   max-width: 1400px;
   margin: 0 auto;
   display: flex;
@@ -507,6 +557,9 @@ h1, h2, h3, h4 {
   color: var(--text-secondary);
   transition: all var(--transition-base);
   white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 
 .nav-btn:hover {
@@ -1403,14 +1456,117 @@ h1, h2, h3, h4 {
     flex: 1;
   }
 
+  .header-actions {
+    display: flex;
+  }
+  
+  .hamburger-btn {
+    display: none; /* Hide since we use bottom nav and remove the overlay */
+  }
+
+  /* Bottom Navigation Styles */
   .nav {
-    order: 3;
+    position: fixed;
+    top: auto;
+    bottom: 0;
+    left: 0;
+    right: 0;
     width: 100%;
-    overflow-x: auto;
+    height: calc(75px + env(safe-area-inset-bottom));
+    z-index: 1000;
+    background: rgba(18, 24, 43, 0.95);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    flex-direction: row;
+    padding: 0 var(--space-sm) env(safe-area-inset-bottom) var(--space-sm);
+    gap: 0;
+    transition: transform 0.3s ease;
+    box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.5);
+    border: none;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 24px 24px 0 0;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  /* Mobile Overlay is removed from HTML but keep it hidden here just in case */
+  .mobile-overlay {
+    display: none !important;
+  }
+
+  [data-theme="light"] .nav {
+    background: rgba(255, 255, 255, 0.95);
+    border-top: 1px solid rgba(0, 0, 0, 0.08);
+    box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.08);
   }
 
   .nav-btn {
-    flex: 1 0 auto;
+    text-align: center;
+    padding: 12px 0 8px;
+    width: 100%;
+    flex: 1;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    border-radius: 0;
+    background: transparent;
+    position: relative;
+  }
+
+  .nav-btn:hover {
+    background: transparent;
+    color: var(--text-primary);
+  }
+  
+  .nav-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 3px;
+    background: var(--gradient-gold);
+    border-radius: 0 0 4px 4px;
+    transition: width 0.3s ease;
+  }
+
+  .nav-btn.active {
+    background: transparent;
+    color: var(--gold-400);
+    box-shadow: none;
+  }
+  
+  .nav-btn.active::before {
+    width: 32px;
+  }
+
+  .nav-icon {
+    font-size: 1.35rem;
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    filter: drop-shadow(0 0 0 transparent);
+  }
+
+  .nav-btn.active .nav-icon {
+    transform: translateY(-2px) scale(1.15);
+    filter: drop-shadow(0 4px 6px rgba(251, 191, 36, 0.3));
+  }
+
+  .nav-text {
+    font-size: 0.65rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+  }
+  
+  .nav-btn.active .nav-text {
+    font-weight: 700;
+  }
+  
+  body {
+    padding-bottom: calc(90px + env(safe-area-inset-bottom));
   }
   
   .hero {
