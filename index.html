@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="ระบบวิเคราะห์และคำนวณเลขล็อตเตอรี่ไทย ด้วยหลักสถิติและความน่าจะเป็นทางคณิตศาสตร์">
+  <meta name="keywords" content="ล็อตเตอรี่, สลากกินแบ่ง, วิเคราะห์, สถิติ, ทำนาย, เลขเด็ด">
+  <title>Thai Lottery Analyzer — ระบบวิเคราะห์ล็อตเตอรี่ไทย</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎰</text></svg>">
+  <link rel="stylesheet" href="index.css">
+</head>
+<body>
+
+  <!-- Loading Overlay -->
+  <div id="loading-overlay" class="loading-overlay">
+    <div class="spinner"></div>
+    <div class="loading-text">กำลังโหลดข้อมูล...</div>
+    <div class="loading-progress">
+      <div class="loading-progress-bar" style="width: 0%"></div>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <header class="header" id="header">
+    <div class="header-inner">
+      <div class="logo">
+        <div class="logo-icon">🎰</div>
+        <div>
+          <div class="logo-text">Thai Lottery Analyzer</div>
+          <div class="logo-subtitle">Statistical Prediction System</div>
+        </div>
+      </div>
+      <nav class="nav" id="main-nav">
+        <button class="nav-btn active" data-section="dashboard" id="nav-dashboard">📊 แดชบอร์ด</button>
+        <button class="nav-btn" data-section="analysis" id="nav-analysis">🔬 วิเคราะห์</button>
+        <button class="nav-btn" data-section="prediction" id="nav-prediction">🎯 ทำนาย</button>
+        <button class="nav-btn" data-section="accuracy" id="nav-accuracy">📈 Accuracy</button>
+        <button class="nav-btn" data-section="history" id="nav-history">📋 ประวัติ</button>
+      </nav>
+      <button class="theme-toggle" id="theme-toggle" title="เปลี่ยนโหมด">
+        <span id="theme-icon">🌙</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="main">
+
+    <!-- ═══════════════════════════════════════════ -->
+    <!-- SECTION: Dashboard -->
+    <!-- ═══════════════════════════════════════════ -->
+    <div id="section-dashboard" class="section active">
+      
+      <!-- Hero -->
+      <div class="hero">
+        <div class="hero-badge">
+          <span class="pulse"></span>
+          <span>ระบบอัปเดตอัตโนมัติ</span>
+        </div>
+        <h1>วิเคราะห์ล็อตเตอรี่ไทย<br>ด้วย <span class="gold">สถิติ & คณิตศาสตร์</span></h1>
+        <p class="hero-desc">
+          ระบบวิเคราะห์ผลรางวัลสลากกินแบ่งรัฐบาลด้วย 6 โมเดลทางสถิติ
+          รวมถึง Frequency Analysis, Hot/Cold System, Gap Analysis, 
+          Digit Correlation, Trend Analysis และ Day-of-Week Influence
+        </p>
+        <div class="hero-stats">
+          <div class="hero-stat">
+            <div class="hero-stat-value counter" id="stat-total-draws">—</div>
+            <div class="hero-stat-label">จำนวนงวดที่วิเคราะห์</div>
+          </div>
+          <div class="hero-stat">
+            <div class="hero-stat-value" id="stat-data-range">—</div>
+            <div class="hero-stat-label">ช่วงข้อมูล</div>
+          </div>
+          <div class="hero-stat">
+            <div class="hero-stat-value" id="stat-next-draw" style="color: var(--gold-400)">—</div>
+            <div class="hero-stat-label">งวดถัดไป (<span id="stat-next-day">—</span>)</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Latest Result -->
+      <div class="section-gap">
+        <h2 class="section-title">🏆 ผลรางวัลงวดล่าสุด</h2>
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">
+              <span class="icon">📅</span>
+              งวดวันที่ <span id="latest-date">—</span>
+            </span>
+            <span class="card-badge badge-success">ล่าสุด</span>
+          </div>
+          <div class="grid-4" style="text-align: center;">
+            <div>
+              <div style="font-size: 0.78rem; color: var(--text-muted); margin-bottom: 8px;">รางวัลที่ 1</div>
+              <div id="latest-first" style="font-size: 2rem; font-weight: 800; letter-spacing: 4px; background: linear-gradient(135deg, var(--gold-300), var(--gold-500)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">—</div>
+            </div>
+            <div>
+              <div style="font-size: 0.78rem; color: var(--text-muted); margin-bottom: 8px;">เลขท้าย 2 ตัว</div>
+              <div id="latest-last2" style="font-size: 1.8rem; font-weight: 700; color: var(--blue-400);">—</div>
+            </div>
+            <div>
+              <div style="font-size: 0.78rem; color: var(--text-muted); margin-bottom: 8px;">เลขหน้า 3 ตัว</div>
+              <div id="latest-front3" style="font-size: 1.3rem; font-weight: 600; color: var(--text-primary);">—</div>
+            </div>
+            <div>
+              <div style="font-size: 0.78rem; color: var(--text-muted); margin-bottom: 8px;">เลขท้าย 3 ตัว</div>
+              <div id="latest-back3" style="font-size: 1.3rem; font-weight: 600; color: var(--text-primary);">—</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Hot Picks -->
+      <div class="section-gap">
+        <h2 class="section-title">🔥 เลขเด็ด — เลขท้าย 2 ตัว ที่มีโอกาสสูง</h2>
+        <p class="section-subtitle">คำนวณจาก Composite Score ของ 6 โมเดลทางสถิติ</p>
+        <div id="hot-picks-container" class="prediction-grid">
+          <!-- Rendered by JS -->
+        </div>
+      </div>
+
+      <!-- Quick Stats -->
+      <div class="section-gap">
+        <h2 class="section-title">📈 สถิติเชิงลึก</h2>
+        <div class="grid-4">
+          <div class="stat-mini">
+            <div class="stat-mini-icon" style="background: var(--hot-bg);">🔢</div>
+            <div class="stat-mini-content">
+              <div class="stat-mini-label">อัตราเลขคี่</div>
+              <div class="stat-mini-value" id="stat-odd-pct">—</div>
+            </div>
+          </div>
+          <div class="stat-mini">
+            <div class="stat-mini-icon" style="background: var(--cold-bg);">🔢</div>
+            <div class="stat-mini-content">
+              <div class="stat-mini-label">อัตราเลขคู่</div>
+              <div class="stat-mini-value" id="stat-even-pct">—</div>
+            </div>
+          </div>
+          <div class="stat-mini">
+            <div class="stat-mini-icon" style="background: var(--warning-bg);">➕</div>
+            <div class="stat-mini-content">
+              <div class="stat-mini-label">ผลรวมเฉลี่ย</div>
+              <div class="stat-mini-value" id="stat-sum-avg">—</div>
+            </div>
+          </div>
+          <div class="stat-mini">
+            <div class="stat-mini-icon" style="background: var(--success-bg);">📊</div>
+            <div class="stat-mini-content">
+              <div class="stat-mini-label">ผลรวม Median</div>
+              <div class="stat-mini-value" id="stat-sum-median">—</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Charts Row -->
+      <div class="section-gap">
+        <div class="grid-3">
+          <div class="card">
+            <div class="card-header">
+              <span class="card-title"><span class="icon">📊</span> ความถี่ตัวเลข</span>
+            </div>
+            <div class="chart-container">
+              <canvas id="chart-digit-freq"></canvas>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header">
+              <span class="card-title"><span class="icon">🔄</span> คี่ / คู่</span>
+            </div>
+            <div class="chart-container">
+              <canvas id="chart-odd-even"></canvas>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header">
+              <span class="card-title"><span class="icon">⬆️</span> สูง / ต่ำ</span>
+            </div>
+            <div class="chart-container">
+              <canvas id="chart-high-low"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Disclaimer -->
+      <div class="disclaimer">
+        <strong>⚠️ คำเตือน:</strong> ระบบนี้ใช้หลักทางสถิติเพื่อวิเคราะห์ข้อมูลย้อนหลังเท่านั้น 
+        การออกรางวัลล็อตเตอรี่เป็นเหตุการณ์สุ่ม (Random Independent Events) 
+        ไม่มีระบบใดสามารถรับประกันผลลัพธ์ได้ โปรดใช้วิจารณญาณ 
+        และใช้ข้อมูลนี้เพื่อการศึกษาเท่านั้น
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════ -->
+    <!-- SECTION: Analysis -->
+    <!-- ═══════════════════════════════════════════ -->
+    <div id="section-analysis" class="section">
+      
+      <h2 class="section-title" style="margin-bottom: 8px;">🔬 การวิเคราะห์เชิงลึก</h2>
+      <p class="section-subtitle">วิเคราะห์ข้อมูลผลรางวัลย้อนหลังด้วยหลายโมเดลทางสถิติ</p>
+
+      <!-- Analysis Tabs -->
+      <div class="tabs" id="analysis-tabs">
+        <button class="tab-btn active" data-tab="freq" id="tab-freq">📊 ความถี่</button>
+        <button class="tab-btn" data-tab="hotcold" id="tab-hotcold">🔥❄️ Hot/Cold</button>
+        <button class="tab-btn" data-tab="gap" id="tab-gap">📏 Gap Analysis</button>
+        <button class="tab-btn" data-tab="trend" id="tab-trend">📈 Trend</button>
+        <button class="tab-btn" data-tab="heatmap" id="tab-heatmap">🗺️ Heatmap</button>
+      </div>
+
+      <!-- Frequency Tab -->
+      <div id="analysis-freq" class="analysis-tab-content active">
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-header">
+              <span class="card-title"><span class="icon">📊</span> ความถี่ตัวเลข 0-9 (รางวัลที่ 1)</span>
+            </div>
+            <div id="freq-bars-container">
+              <!-- Rendered by JS -->
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header">
+              <span class="card-title"><span class="icon">📈</span> การกระจายผลรวม</span>
+            </div>
+            <div class="chart-container">
+              <canvas id="chart-sum-dist"></canvas>
+            </div>
+          </div>
+        </div>
+        <div class="card" style="margin-top: var(--space-lg);">
+          <div class="card-header">
+            <span class="card-title"><span class="icon">🔢</span> เลขท้าย 2 ตัว — Top 20 ที่ออกบ่อย</span>
+            <span class="card-badge badge-gold">Statistics</span>
+          </div>
+          <div class="data-table-wrapper">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>อันดับ</th>
+                  <th>เลข</th>
+                  <th>จำนวนครั้ง</th>
+                  <th>อัตรา</th>
+                  <th>ระดับ</th>
+                </tr>
+              </thead>
+              <tbody id="last2-freq-tbody">
+                <!-- Rendered by JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Hot/Cold Tab -->
+      <div id="analysis-hotcold" class="analysis-tab-content">
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title"><span class="icon">🔥❄️</span> Hot / Cold Number Analysis</span>
+            <span class="card-badge badge-hot">Live Analysis</span>
+          </div>
+          <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 16px;">
+            🔴 <strong>Hot</strong> = ออกบ่อยใน 10 งวดล่าสุด (Ratio > 1.3)&nbsp;&nbsp;|&nbsp;&nbsp;
+            🔵 <strong>Cold</strong> = ออกน้อยกว่าค่าเฉลี่ย (Ratio < 0.7)&nbsp;&nbsp;|&nbsp;&nbsp;
+            ⚪ <strong>Normal</strong> = ปกติ
+          </p>
+          <div id="hotcold-container">
+            <!-- Rendered by JS -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Gap Tab -->
+      <div id="analysis-gap" class="analysis-tab-content">
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title"><span class="icon">📏</span> Gap Analysis — เลขท้าย 2 ตัว</span>
+            <span class="card-badge badge-gold">Overdue Detection</span>
+          </div>
+          <div id="gap-container">
+            <!-- Rendered by JS -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Trend Tab -->
+      <div id="analysis-trend" class="analysis-tab-content">
+        <div class="card" style="margin-bottom: var(--space-lg);">
+          <div class="card-header">
+            <span class="card-title"><span class="icon">📈</span> Moving Average Trend</span>
+            <span class="card-badge badge-gold">Trend Signal</span>
+          </div>
+          <div class="chart-container" style="height: 350px;">
+            <canvas id="chart-trend"></canvas>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title"><span class="icon">📋</span> สรุปแนวโน้ม</span>
+          </div>
+          <div id="trend-summary">
+            <!-- Rendered by JS -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Heatmap Tab -->
+      <div id="analysis-heatmap" class="analysis-tab-content">
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title"><span class="icon">🗺️</span> Heatmap — ตัวเลข × ตำแหน่ง</span>
+            <span class="card-badge badge-gold">Position Analysis</span>
+          </div>
+          <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 16px;">
+            ความเข้มของสี = ความถี่ที่ตัวเลขปรากฏในแต่ละตำแหน่งของรางวัลที่ 1
+          </p>
+          <div id="heatmap-container">
+            <!-- Rendered by JS -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════ -->
+    <!-- SECTION: Prediction -->
+    <!-- ═══════════════════════════════════════════ -->
+    <div id="section-prediction" class="section">
+      
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; flex-wrap: wrap; gap: 16px;">
+        <div>
+          <h2 class="section-title" style="margin-bottom: 4px;">🎯 ผลการทำนายงวดหน้า</h2>
+          <p class="section-subtitle" style="margin-bottom: 0;">
+            งวดวันที่ <strong id="pred-next-date" style="color: var(--gold-400);">—</strong> 
+            (<span id="pred-next-day">—</span>)
+          </p>
+        </div>
+        <div class="confidence-meter">
+          <div class="confidence-ring">
+            <svg viewBox="0 0 120 120">
+              <defs>
+                <linearGradient id="goldGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" style="stop-color:#fbbf24"/>
+                  <stop offset="100%" style="stop-color:#d97706"/>
+                </linearGradient>
+              </defs>
+              <circle class="bg-ring" cx="60" cy="60" r="50"/>
+              <circle class="progress-ring" cx="60" cy="60" r="50"/>
+            </svg>
+            <div class="confidence-value">—</div>
+          </div>
+          <div class="confidence-label">ค่าความมั่นใจเฉลี่ย</div>
+        </div>
+      </div>
+
+      <!-- 🔍 Number Search -->
+      <div class="section-gap">
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title"><span class="icon">🔍</span> ค้นหาเลข</span>
+            <span class="card-badge badge-gold">Search</span>
+          </div>
+          <div class="search-container">
+            <div class="search-input-wrapper">
+              <input type="text" id="search-number-input" class="search-input" 
+                     placeholder="พิมพ์เลขที่ต้องการค้นหา (2-6 หลัก)..." 
+                     maxlength="6" inputmode="numeric" autocomplete="off">
+              <button class="btn btn-primary" id="search-number-btn">🔍 ค้นหา</button>
+            </div>
+            <div id="search-result-container">
+              <!-- Rendered by JS -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 6-digit prediction -->
+      <div class="section-gap">
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title"><span class="icon">🏆</span> รางวัลที่ 1 — 6 หลัก</span>
+            <span class="card-badge badge-gold">Top Prediction</span>
+          </div>
+          <div id="pred-first-container" class="prediction-grid">
+            <!-- Rendered by JS -->
+          </div>
+        </div>
+      </div>
+
+      <!-- 🔗 Combo 6 Prediction -->
+      <div class="section-gap">
+        <div class="card" style="border-color: rgba(251, 191, 36, 0.2); box-shadow: 0 0 30px rgba(251, 191, 36, 0.08);">
+          <div class="card-header">
+            <span class="card-title"><span class="icon">🔗</span> Combo 6 หลัก — หน้า 3 + ท้าย 3 + ท้าย 2</span>
+            <span class="card-badge badge-hot">★ Maximum Coverage</span>
+          </div>
+          <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 20px; line-height: 1.8;">
+            <strong style="color: var(--gold-400);">หลักการ:</strong> 
+            นำ<strong style="color: var(--text-primary);">เลขหน้า 3 ตัว</strong> + <strong style="color: var(--text-primary);">เลขท้าย 3 ตัว</strong> 
+            ต่อกันเป็น 6 หลัก แล้วตรวจว่า<strong style="color: var(--text-primary);">เลขท้าย 2 ตัว</strong>ของ combo ตรงกับ prediction ท้าย 2 ตัวหรือไม่<br>
+            <span style="color: var(--gold-400);">✦✦✦ Triple Match</span> = ครบทั้ง 3 รางวัลในสลาก 1 ชุด → โอกาสได้รางวัลสูงสุด
+          </p>
+          <!-- Combo Visual Cards -->
+          <div id="combo6-container">
+            <!-- Rendered by JS -->
+          </div>
+          <!-- Combo Details Table -->
+          <div style="margin-top: 20px;">
+            <div id="combo6-table-container">
+              <!-- Rendered by JS -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2 & 3 digit predictions -->
+      <div class="grid-3 section-gap">
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title"><span class="icon">🔢</span> เลขท้าย 2 ตัว</span>
+            <span class="card-badge badge-hot">Hot</span>
+          </div>
+          <div id="pred-last2-container" class="prediction-grid" style="grid-template-columns: repeat(2, 1fr);">
+            <!-- Rendered by JS -->
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title"><span class="icon">🔙</span> เลขท้าย 3 ตัว</span>
+            <span class="card-badge badge-cold">Analysis</span>
+          </div>
+          <div id="pred-last3-container" class="prediction-grid" style="grid-template-columns: repeat(2, 1fr);">
+            <!-- Rendered by JS -->
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title"><span class="icon">🔜</span> เลขหน้า 3 ตัว</span>
+            <span class="card-badge badge-success">Analysis</span>
+          </div>
+          <div id="pred-front3-container" class="prediction-grid" style="grid-template-columns: repeat(2, 1fr);">
+            <!-- Rendered by JS -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Hot Picks Detail -->
+      <div class="section-gap">
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title"><span class="icon">🌟</span> เลขเด่นประจำงวด</span>
+          </div>
+          <div id="hot-picks-summary" style="display: flex; flex-direction: column; gap: 10px;">
+            <!-- Rendered by JS -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Disclaimer -->
+      <div class="disclaimer">
+        <strong>⚠️ คำเตือนสำคัญ:</strong> ผลการทำนายนี้ได้จากการวิเคราะห์ทางสถิติเท่านั้น 
+        <strong>ไม่สามารถรับประกันผลลัพธ์ได้</strong> เนื่องจากการออกรางวัลเป็นเหตุการณ์สุ่มอิสระ 
+        (Independent Random Events) ความน่าจะเป็นในการถูกรางวัลที่ 1 คือ 1/1,000,000 เท่านั้น
+        กรุณาใช้เพื่อการศึกษาและความบันเทิงเท่านั้น
+      </div>
+    </div>
+    <!-- ═══════════════════════════════════════════ -->
+    <!-- SECTION: Accuracy Dashboard -->
+    <!-- ═══════════════════════════════════════════ -->
+    <div id="section-accuracy" class="section">
+      
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; flex-wrap: wrap; gap: 16px;">
+        <div>
+          <h2 class="section-title" style="margin-bottom: 4px;">📈 Accuracy Dashboard</h2>
+          <p class="section-subtitle" style="margin-bottom: 0;">
+            Backtesting ย้อนหลัง — ทดสอบว่าระบบทำนายได้แม่นยำแค่ไหน
+          </p>
+        </div>
+        <button class="btn btn-primary" id="btn-run-backtest">
+          ▶️ เริ่ม Backtesting
+        </button>
+      </div>
+
+      <!-- Accuracy Overview -->
+      <div id="accuracy-loading" style="display: none;">
+        <div class="card" style="text-align: center; padding: 60px;">
+          <div class="spinner" style="margin: 0 auto 20px;"></div>
+          <div style="color: var(--text-secondary); font-size: 0.95rem;">
+            กำลัง Backtesting... <span id="backtest-progress">0</span>%
+          </div>
+          <div style="color: var(--text-muted); font-size: 0.8rem; margin-top: 8px;">
+            ทดสอบ 20 งวดล่าสุดด้วยข้อมูลก่อนหน้า
+          </div>
+        </div>
+      </div>
+
+      <div id="accuracy-results" style="display: none;">
+        <!-- Accuracy Rate Cards -->
+        <div class="grid-4 section-gap">
+          <div class="stat-mini">
+            <div class="stat-mini-icon" style="background: var(--warning-bg);">🎯</div>
+            <div class="stat-mini-content">
+              <div class="stat-mini-label">ท้าย 2 ตัว Hit Rate</div>
+              <div class="stat-mini-value" id="acc-last2">—</div>
+            </div>
+          </div>
+          <div class="stat-mini">
+            <div class="stat-mini-icon" style="background: var(--success-bg);">🎯</div>
+            <div class="stat-mini-content">
+              <div class="stat-mini-label">ท้าย 3 ตัว Hit Rate</div>
+              <div class="stat-mini-value" id="acc-last3">—</div>
+            </div>
+          </div>
+          <div class="stat-mini">
+            <div class="stat-mini-icon" style="background: var(--cold-bg);">🎯</div>
+            <div class="stat-mini-content">
+              <div class="stat-mini-label">หน้า 3 ตัว Hit Rate</div>
+              <div class="stat-mini-value" id="acc-front3">—</div>
+            </div>
+          </div>
+          <div class="stat-mini">
+            <div class="stat-mini-icon" style="background: var(--hot-bg);">📊</div>
+            <div class="stat-mini-content">
+              <div class="stat-mini-label">Overall Accuracy</div>
+              <div class="stat-mini-value" id="acc-overall">—</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Accuracy vs Baseline -->
+        <div class="grid-2 section-gap">
+          <div class="card">
+            <div class="card-header">
+              <span class="card-title"><span class="icon">📊</span> Accuracy vs Baseline (สุ่ม)</span>
+              <span class="card-badge badge-gold">Comparison</span>
+            </div>
+            <div id="accuracy-comparison">
+              <!-- Rendered by JS -->
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header">
+              <span class="card-title"><span class="icon">⚙️</span> Model Weights ปัจจุบัน</span>
+              <span class="card-badge badge-gold" id="weights-badge">Default</span>
+            </div>
+            <div id="weights-display">
+              <!-- Rendered by JS -->
+            </div>
+            <button class="btn btn-secondary btn-sm" id="btn-auto-tune" style="margin-top: 16px; width: 100%;">
+              ⚡ Auto-Tune Weights จาก Backtest
+            </button>
+          </div>
+        </div>
+
+        <!-- Backtest Detail Table -->
+        <div class="section-gap">
+          <div class="card">
+            <div class="card-header">
+              <span class="card-title"><span class="icon">📋</span> รายละเอียด Backtesting</span>
+            </div>
+            <div class="data-table-wrapper">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>งวด</th>
+                    <th>รางวัลที่ 1</th>
+                    <th>ท้าย 2 จริง</th>
+                    <th>ท้าย 2 Hit</th>
+                    <th>ท้าย 3 Hit</th>
+                    <th>หน้า 3 Hit</th>
+                    <th>Hot Digits</th>
+                  </tr>
+                </thead>
+                <tbody id="backtest-detail-tbody">
+                  <!-- Rendered by JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Initial State -->
+      <div id="accuracy-empty">
+        <div class="card" style="text-align: center; padding: 60px;">
+          <div style="font-size: 4rem; opacity: 0.3; margin-bottom: 20px;">📈</div>
+          <div style="font-size: 1.1rem; color: var(--text-secondary); margin-bottom: 8px;">
+            ยังไม่มีผล Backtesting
+          </div>
+          <div style="color: var(--text-muted); font-size: 0.85rem;">
+            กดปุ่ม "เริ่ม Backtesting" เพื่อทดสอบความแม่นยำของระบบ
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════ -->
+    <!-- SECTION: History -->
+    <!-- ═══════════════════════════════════════════ -->
+    <div id="section-history" class="section">
+      
+      <h2 class="section-title">📋 ประวัติผลรางวัลย้อนหลัง</h2>
+      <p class="section-subtitle">ผลรางวัลสลากกินแบ่งรัฐบาลย้อนหลัง 30 งวด</p>
+
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title"><span class="icon">📋</span> ตารางผลรางวัล</span>
+          <button class="btn btn-sm btn-secondary" onclick="App.refreshData()" id="btn-refresh">
+            🔄 รีเฟรชข้อมูล
+          </button>
+        </div>
+        <div class="data-table-wrapper">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>วันที่ออกรางวัล</th>
+                <th>รางวัลที่ 1</th>
+                <th>เลขหน้า 3 ตัว</th>
+                <th>เลขท้าย 3 ตัว</th>
+                <th>เลขท้าย 2 ตัว</th>
+              </tr>
+            </thead>
+            <tbody id="history-tbody">
+              <!-- Rendered by JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <p>🎰 Thai Lottery Analyzer — Statistical Prediction System</p>
+    <p style="margin-top: 6px; font-size: 0.72rem;">
+      ข้อมูลจาก สำนักงานสลากกินแบ่งรัฐบาล (glo.or.th) | 
+      เพื่อการศึกษาทางสถิติเท่านั้น | 
+      © 2026
+    </p>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="data.js"></script>
+  <script src="analysis.js"></script>
+  <script src="prediction.js"></script>
+  <script src="charts.js"></script>
+  <script src="backtest.js"></script>
+  <script src="app.js"></script>
+
+</body>
+</html>
