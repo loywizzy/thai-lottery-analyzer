@@ -1389,22 +1389,42 @@ h1, h2, h3, h4 {
 }
 
 @media (max-width: 768px) {
+  .header {
+    padding: var(--space-sm) var(--space-md);
+  }
+
   .header-inner {
-    flex-direction: column;
-    gap: var(--space-md);
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: var(--space-sm);
   }
   
+  .logo {
+    flex: 1;
+  }
+
   .nav {
+    order: 3;
     width: 100%;
     overflow-x: auto;
   }
+
+  .nav-btn {
+    flex: 1 0 auto;
+  }
   
+  .hero {
+    padding: var(--space-xl) 0 var(--space-lg);
+  }
+
   .hero h1 {
     font-size: 1.8rem;
   }
   
   .hero-stats {
     gap: var(--space-lg);
+    flex-direction: column;
+    align-items: center;
   }
   
   .grid-2,
@@ -1418,11 +1438,19 @@ h1, h2, h3, h4 {
   }
   
   .main {
-    padding: var(--space-md);
+    padding: var(--space-sm);
   }
   
   .card {
-    padding: var(--space-lg);
+    padding: var(--space-lg) var(--space-md);
+  }
+
+  .search-input-wrapper {
+    flex-direction: column;
+  }
+
+  .search-stats-grid {
+    grid-template-columns: repeat(2, 1fr);
   }
 }
 
@@ -1432,11 +1460,15 @@ h1, h2, h3, h4 {
   }
   
   .hero h1 {
-    font-size: 1.5rem;
+    font-size: 1.4rem;
   }
   
   .heatmap {
     grid-template-columns: repeat(5, 1fr);
+  }
+
+  .search-result-number {
+    font-size: 2.2rem;
   }
 }
 
